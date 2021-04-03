@@ -3,6 +3,11 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,6 +24,15 @@ public class SwerveDrive extends SubsystemBase {
 
     // Create the gyroscope
     private final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+
+    // Generate kinematics
+    private final double trackWidth = 0.4826;
+    private final double wheelBase = 0.5334;
+    private final double maxSpeed = 3.5;
+    private final double speedLimit = 1;
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            new Translation2d(wheelBase / 2, trackWidth / 2), new Translation2d(wheelBase / 2, -trackWidth / 2),
+            new Translation2d(-wheelBase / 2, trackWidth / 2), new Translation2d(-wheelBase / 2, -trackWidth / 2));
 
     /**
      * Create a new swerve drive subsystem.
@@ -48,20 +62,32 @@ public class SwerveDrive extends SubsystemBase {
             rcw = 0;
         }
 
+        // Generate the swerve module states depending on whether we're currently using
+        // field oriented control
+        var states = kinematics.toSwerveModuleStates(
+                fieldOriented ? ChassisSpeeds.fromFieldRelativeSpeeds(fwd, str, rcw, getGyroAngle())
+                        : new ChassisSpeeds(fwd, str, rcw));
+
+        // Normalize the wheel speeds using the speed limit
+        SwerveDriveKinematics.normalizeWheelSpeeds(states, maxSpeed * speedLimit);
+
+        // Iterate through all modules and print out their angles
+        for (var index = 0; index < modules.length; index++) {
+            final var module = modules[index];
+            final var angle = module.getAngle();
+            final var state = states[index];
+            SmartDashboard.putNumber(module.name + " ANGLE", angle.getDegrees());
+            
+            //Set the module state to an optimized state
+            module.setState(SwerveModuleState.optimize(state, module.getAngle()));
+        }
+
         // Put Swerve Joystick values on the dashboard.
         SmartDashboard.putNumber("FWD", fwd);
         SmartDashboard.putNumber("STR", str);
         SmartDashboard.putNumber("RCW", rcw);
-        SmartDashboard.putNumber("Gyro Angle", getGyroAngle());
+        SmartDashboard.putNumber("Gyro Angle", getGyroAngle().getDegrees());
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
-
-        // Iterate through all modules and print out their angles
-        for (final var module : modules) {
-            final var angle = module.getAngle();
-            SmartDashboard.putNumber(module.name + " ANGLE", angle.getDegrees());
-            SmartDashboard.putNumber(module.name + " ANGLE 360", module.getAngle360().getDegrees());
-            SmartDashboard.putNumber(module.name + " ANGLE RAW", module.getRawAngle().getDegrees());
-        }
     }
 
     /**
@@ -69,7 +95,7 @@ public class SwerveDrive extends SubsystemBase {
      * 
      * @return the gyroscope angle of the swerve
      */
-    public double getGyroAngle() {
-        return this.ahrs.getAngle();
+    public Rotation2d getGyroAngle() {
+        return Rotation2d.fromDegrees(-Math.IEEEremainder(this.ahrs.getAngle(), 360));
     }
 }
