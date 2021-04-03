@@ -21,6 +21,8 @@ public class SwerveModule extends SubsystemBase {
     SwerveModule(int drivePort, int steerPort) {
         this.drive = new CANSparkMax(drivePort, MotorType.kBrushless);
         this.steer = new TalonSRX(steerPort);
+
+        this.init();
     }
 
     public void init() {
