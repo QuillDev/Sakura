@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive extends SubsystemBase {
 
-    private final double DEADZONE = .15; //Configure the deadzone for input when driving
+    private final double DEADZONE = .05; //Configure the deadzone for input when driving
 
     private final SwerveModule module = new SwerveModule(2, 7);
 
