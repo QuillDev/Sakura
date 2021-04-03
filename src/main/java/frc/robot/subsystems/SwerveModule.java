@@ -22,9 +22,11 @@ public class SwerveModule extends SubsystemBase {
 
     SwerveModule(String name, int drivePort, int steerPort, boolean invertDrive, boolean invertSteer,
             boolean invertPhase) {
+
+        this.name = name;
+
         this.drive = new CANSparkMax(drivePort, MotorType.kBrushless);
         this.steer = new TalonSRX(steerPort);
-        this.name = name;
 
         this.init(invertDrive, invertSteer, invertPhase);
     }
@@ -61,6 +63,16 @@ public class SwerveModule extends SubsystemBase {
         steer.setSelectedSensorPosition(0, Constants.STEER_PID, Constants.TIMEOUT);
     }
 
+    public Rotation2d getRawAngle() {
+        final var unit = steer.getSelectedSensorPosition(0);
+        final var angle = (((unit % 4096) / 4096 * 360) % 360);
+        return Rotation2d.fromDegrees(angle);
+    }
+
+    public Rotation2d getAngle360() {
+        return Rotation2d.fromDegrees((getRawAngle().getDegrees() + 360) % 360);
+    }
+
     public Rotation2d getAngle() {
         var angle = getAngle360().getDegrees();
 
@@ -71,9 +83,4 @@ public class SwerveModule extends SubsystemBase {
         return Rotation2d.fromDegrees(angle);
     }
 
-    public Rotation2d getAngle360() {
-        final var unit = steer.getSelectedSensorPosition(0);
-        var angle = (((((unit % 4096) / 4096 * 360) % 360) + 360) % 360);
-        return Rotation2d.fromDegrees(angle);
-    }
 }

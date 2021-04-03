@@ -17,21 +17,22 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule br = new SwerveModule("Back Right", 1, 4, false, false, true);
     private final SwerveModule[] modules = { fl, fr, bl, br };
 
-    //Create the gyroscope
+    // Create the gyroscope
     private final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
     /**
      * Create a new swerve drive subsystem.
      */
-    public SwerveDrive(){
-        this.ahrs.reset(); //Reset the gyro back to zero
+    public SwerveDrive() {
+        this.ahrs.reset(); // Reset the gyro back to zero
     }
 
     /**
      * Drive the swerve drive using the Joystick inputs.
-     * @param fwd speed on Y axis
-     * @param str speed on X axis
-     * @param rcw rotation over origin
+     * 
+     * @param fwd           speed on Y axis
+     * @param str           speed on X axis
+     * @param rcw           rotation over origin
      * @param fieldOriented whether to drive using field oriented control mode.
      */
     public void drive(double fwd, double str, double rcw, boolean fieldOriented) {
@@ -58,14 +59,16 @@ public class SwerveDrive extends SubsystemBase {
         for (final var module : modules) {
             final var angle = module.getAngle();
             SmartDashboard.putNumber(module.name + " ANGLE", angle.getDegrees());
+            SmartDashboard.putNumber(module.name + " ANGLE RAW", module.getRawAngle().getDegrees());
         }
     }
 
     /**
      * Get the gyroscope angle from the Swerve subsystem
+     * 
      * @return the gyroscope angle of the swerve
      */
-    public double getGyroAngle(){
+    public double getGyroAngle() {
         return this.ahrs.getAngle();
     }
 }
