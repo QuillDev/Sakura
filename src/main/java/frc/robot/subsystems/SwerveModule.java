@@ -70,4 +70,11 @@ public class SwerveModule extends SubsystemBase {
 
         return Rotation2d.fromDegrees(angle);
     }
+
+    public Rotation2d getAngle360() {
+        final var unit = steer.getSelectedSensorPosition(0);
+        var angle =  ( ((((unit % 4096) / 4096 * 360) % 360) + 360) % 360 );
+
+        return Rotation2d.fromDegrees(angle);
+    }
 }

@@ -12,9 +12,9 @@ public class SwerveDrive extends SubsystemBase {
 
     // Creation of swerve modules
     private final SwerveModule fl = new SwerveModule("Font Left", 2, 7, false, false, true);
-    private final SwerveModule fr = new SwerveModule("Front Right", 3, 6, false, false, false);
-    private final SwerveModule bl = new SwerveModule("Back Left", 8, 5, false, false, false);
-    private final SwerveModule br = new SwerveModule("Back Right", 1, 4, false, false, false);
+    private final SwerveModule fr = new SwerveModule("Front Right", 3, 6, false, false, true);
+    private final SwerveModule bl = new SwerveModule("Back Left", 8, 5, false, false, true);
+    private final SwerveModule br = new SwerveModule("Back Right", 1, 4, false, false, true);
     private final SwerveModule[] modules = { fl, fr, bl, br };
 
     //Create the gyroscope
