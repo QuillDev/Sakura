@@ -12,25 +12,33 @@ import frc.robot.Constants;
 import frc.robot.Helper.Gains;
 
 public class SwerveModule extends SubsystemBase {
+
+    public final String name;
     private final CANSparkMax drive;
     private final TalonSRX steer;
 
     // Gains
     final Gains kGains = new Gains(0.15, 0.0, 1.0, 0.0, 0, 1.0);
 
-    SwerveModule(int drivePort, int steerPort) {
+    SwerveModule(String name, int drivePort, int steerPort, boolean invertDrive, boolean invertSteer, boolean invertPhase) {
         this.drive = new CANSparkMax(drivePort, MotorType.kBrushless);
         this.steer = new TalonSRX(steerPort);
-
-        this.init();
+        this.name = name;
+        
+        this.init(invertDrive, invertSteer, invertPhase);
     }
 
-    public void init() {
+    public void init(boolean invertDrive, boolean invertSteer, boolean invertPhase) {
+
+        //Setup drive
         drive.restoreFactoryDefaults();
+        drive.setInverted(invertDrive);
+
+        //Setup Steer
         steer.configFactoryDefault();
 
-        steer.setInverted(false);
-        steer.setSensorPhase(false);
+        steer.setInverted(invertSteer);
+        steer.setSensorPhase(invertPhase);
 
         steer.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
         steer.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -54,7 +62,7 @@ public class SwerveModule extends SubsystemBase {
 
     public Rotation2d getAngle() {
         final var unit = steer.getSelectedSensorPosition(0);
-        var angle = ((((unit % 4096) / 4096 * 360) % 360) + 360) % 360;
+        var angle =  ( ((((unit % 4096) / 4096 * 360) % 360) + 360) % 360 );
 
         if (angle > 180) {
             angle -= 360;
