@@ -16,4 +16,6 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final int TIMEOUT = 10;
+    public static final int STEER_PID = 0;
 }
