@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import org.slf4j.LoggerFactory;
 import org.strykeforce.thirdcoast.swerve.SwerveDrive;
 import org.strykeforce.thirdcoast.swerve.SwerveDriveConfig;
+import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.FeedbackSensor;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -57,6 +58,8 @@ public class DriveSubsystem extends SubsystemBase {
     
     /* Update Motor controller configs before calling get wheels*/
     // EX. config.driveConfig.slot0.kP = 3.0;
+    config.driveConfig.feedbackSensor = FeedbackSensor.CAN_CODER;
+    config.azimuthConfig.feedbackSensor = FeedbackSensor.CTRE_MAG_ENCODER;
     
     config.wheels = config.getWheels();
     return new SwerveDrive(config);

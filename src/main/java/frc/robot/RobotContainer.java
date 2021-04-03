@@ -12,7 +12,7 @@ import frc.robot.subsystem.DriveSubsystem;
 public class RobotContainer {
   //public static TelemetryService TELEMETRY;
   public static DriveSubsystem DRIVE = new DriveSubsystem();
-  public static XboxController CONTROLS = new XboxController(0);
+  public static Joystick CONTROLS = new Joystick();
 
   public RobotContainer() {
 
