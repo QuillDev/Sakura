@@ -59,6 +59,7 @@ public class SwerveDrive extends SubsystemBase {
         for (final var module : modules) {
             final var angle = module.getAngle();
             SmartDashboard.putNumber(module.name + " ANGLE", angle.getDegrees());
+            SmartDashboard.putNumber(module.name + " ANGLE 360", module.getAngle360().getDegrees());
             SmartDashboard.putNumber(module.name + " ANGLE RAW", module.getRawAngle().getDegrees());
         }
     }
