@@ -1,6 +1,6 @@
 package frc.robot.command;
 
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystem.DriveSubsystem;
@@ -9,7 +9,7 @@ public final class TeleOpDriveCommand extends CommandBase {
 
   private static final double DEADBAND = 0.05;
   private static final DriveSubsystem DRIVE = RobotContainer.DRIVE;
-  private static final XboxController controls = RobotContainer.CONTROLS;
+  private static final Joystick controls = RobotContainer.CONTROLS;
 
   public TeleOpDriveCommand() {
     addRequirements(DRIVE);

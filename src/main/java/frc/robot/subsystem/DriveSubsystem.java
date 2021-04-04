@@ -58,10 +58,13 @@ public class DriveSubsystem extends SubsystemBase {
     
     /* Update Motor controller configs before calling get wheels*/
     // EX. config.driveConfig.slot0.kP = 3.0;
+    //TODO: CONFIGURE THIS WITH A GOOD CONFIG
     config.driveConfig.feedbackSensor = FeedbackSensor.CAN_CODER;
     config.azimuthConfig.feedbackSensor = FeedbackSensor.CTRE_MAG_ENCODER;
-    
+
+    //PID Settings
     config.wheels = config.getWheels();
+
     return new SwerveDrive(config);
   }
 }
