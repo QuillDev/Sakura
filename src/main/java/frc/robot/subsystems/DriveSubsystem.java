@@ -12,7 +12,6 @@ import org.strykeforce.thirdcoast.swerve.TalonSRXWrapper;
 import org.strykeforce.thirdcoast.swerve.Wheel;
 import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.AzimuthMotorController;
 import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.FeedbackSensor;
-import org.strykeforce.thirdcoast.swerve.TalonSRXWrapper.*;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +27,7 @@ public class DriveSubsystem extends SubsystemBase {
      * if wheels form an x pattern when only applying yaw (right x stick), change to
      * false: hardware dependent
      */
-    private static final boolean INVERT_ERROR = true;
+    private static final boolean INVERT_ERROR = false;
 
     private final SwerveDrive swerve = getSwerve();
 
@@ -58,15 +57,20 @@ public class DriveSubsystem extends SubsystemBase {
         config.driveConfig = new MotorControllerConfig(AzimuthMotorController.SPARK_MAX, FeedbackSensor.CAN_CODER);
 
         // Drive Configuration
-        config.driveConfig.continuousCurrentLimit = 40;
-        config.driveConfig.peakCurrentLimit = 0;
-
+        config.driveConfig.slot0.kP = 1;
+        config.driveConfig.slot0.kI = 0.;
+        config.driveConfig.slot0.kD = 0.;
+        config.driveConfig.slot0.kF = 0.;
+        config.driveConfig.slot0.kIZone = 0.;
+        config.driveConfig.slot0.kAllowableError = 0;
+        config.driveConfig.motionCruiseVelocity = 3000;
+        config.driveConfig.motionAcceleration = 4000;
         // Azimuth Config
         config.azimuthConfig.continuousCurrentLimit = 10;
         config.azimuthConfig.peakCurrentLimit = 0;
-        config.azimuthConfig.slot0.kP = 10.0;
+        config.azimuthConfig.slot0.kP = 1.;
         config.azimuthConfig.slot0.kI = 0.0;
-        config.azimuthConfig.slot0.kD = 100.0;
+        config.azimuthConfig.slot0.kD = 0.;
         config.azimuthConfig.slot0.kF = 0.0;
         config.azimuthConfig.slot0.kIZone = 0;
         config.azimuthConfig.slot0.kAllowableError = 0;
