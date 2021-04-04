@@ -10,6 +10,7 @@ import org.strykeforce.thirdcoast.swerve.TalonSRXWrapper;
 import org.strykeforce.thirdcoast.swerve.Wheel;
 import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.AzimuthMotorController;
 import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.FeedbackSensor;
+import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.MotorType;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,7 +26,7 @@ public class DriveSubsystem extends SubsystemBase {
      * if wheels form an x pattern when only applying yaw (right x stick), change to
      * false: hardware dependent
      */
-    private static final boolean INVERT_ERROR = false;
+    private static final boolean INVERT_ERROR = true;
 
     private final SwerveDrive swerve = getSwerve();
 
@@ -55,18 +56,17 @@ public class DriveSubsystem extends SubsystemBase {
         config.driveConfig = new MotorControllerConfig(AzimuthMotorController.SPARK_MAX, FeedbackSensor.INTEGRATED_SENSOR);
 
         // Drive Configuration
-        config.driveConfig.slot0.kP = 5e-5;
-        config.driveConfig.slot0.kI = 1e-6;
+        config.driveConfig.motorType = MotorType.BRUSHLESS;
+        config.driveConfig.slot0.kP = 6e-5;
+        config.driveConfig.slot0.kI = 0;
         config.driveConfig.slot0.kD = 0;
         config.driveConfig.slot0.kIZone = 0;
-        config.driveConfig.slot0.kF = 0.000156;
-        config.driveConfig.motionCruiseVelocity = 2000;
-        config.azimuthConfig.motionAcceleration = 1500;
-
+        config.driveConfig.slot0.kF = 0.000015;
+        config.driveSetpointMax = 5500;
         // Azimuth Config
         config.azimuthConfig.continuousCurrentLimit = 10;
         config.azimuthConfig.peakCurrentLimit = 0;
-        config.azimuthConfig.slot0.kP = 1.;
+        config.azimuthConfig.slot0.kP = 1;
         config.azimuthConfig.slot0.kI = 0.0;
         config.azimuthConfig.slot0.kD = 0.;
         config.azimuthConfig.slot0.kF = 0.0;
@@ -86,12 +86,13 @@ public class DriveSubsystem extends SubsystemBase {
             final var azimuth = new TalonSRXWrapper(config.azimuthConfig, aID[i]);
             final var drive = new SparkMaxWrapper(config.driveConfig, dID[i]);
             final var wheel = new Wheel(azimuth, drive, DRIVE_SETPOINT_MAX, AZIMUTH_TICKS, INVERT_ERROR);
+
+            //DO NOT TOUCH 1
+
             wheels[i] = wheel;
         }
-
         // Set the swerve drives wheels
         config.wheels = wheels;
-
         return new SwerveDrive(config);
     }
 

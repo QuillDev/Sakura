@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.strykeforce.thirdcoast.swerve.MotorControllerConfig.FeedbackSensor;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
@@ -21,6 +22,7 @@ public class SparkMaxWrapper implements MotorControllerWrapper {
   private CANEncoder canEncoder;
   private CANCoder encoder;
   private PIDController PIDController;
+  private boolean driveInverted;
 
   private boolean isAzimuth = false;
   private int id = -1;
@@ -161,7 +163,10 @@ public class SparkMaxWrapper implements MotorControllerWrapper {
       double tmp_output = PIDController.calculate(getPosition(), output) / 4096.0;
       output = tmp_output > 1.0 ? 1.0 : tmp_output < -1.0 ? -1.0 : tmp_output;
     }
-    pidController.setReference(output, getRevControlType(), slot);
+
+    output *= (driveInverted ? -1 : 1);
+    SmartDashboard.putNumber("SM REF", output * 5500);
+    pidController.setReference(output * 5500, ControlType.kVelocity, slot);
   }
 
   public void setSensorPosition(double position) {
@@ -172,6 +177,9 @@ public class SparkMaxWrapper implements MotorControllerWrapper {
     set(0.0);
   }
 
+  public void setInverted(boolean invert){
+    driveInverted = invert;
+  }
   public double getPosition() {
     return encoder.getPosition();
   }
