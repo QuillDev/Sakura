@@ -7,12 +7,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.TeleopSwerveDriveCommand;
+import frc.robot.subsystems.DriveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -23,37 +23,24 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
 
-  private final SwerveDrive swerveDrive = new SwerveDrive(); // the swerve drive
-  private final Joystick stick = new Joystick(0); // the joystick for the driver
+  public static final DriveSubsystem SWERVE_DRIVE = new DriveSubsystem();
+  public static final Joystick CONTROLS = new Joystick(0);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
   public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
 
-    //Configure the default driving command for the swerve drive
-    swerveDrive.setDefaultCommand(new RunCommand(() -> {
-      swerveDrive.drive(-stick.getRawAxis(1), stick.getRawAxis(0), -stick.getRawAxis(4), true);
-    }, swerveDrive));
+    if (RobotBase.isReal()) {
+
+      SWERVE_DRIVE.setDefaultCommand(new TeleopSwerveDriveCommand());
+
+      // Zero Gyro Command
+      new JoystickButton(CONTROLS, Button.kA.value).whenPressed(() -> SWERVE_DRIVE.zeroGyro());
+
+      // Zero Azimuths Command
+      new JoystickButton(CONTROLS, Button.kB.value).whenPressed(() -> SWERVE_DRIVE.zeroAzimuths());
+
+      // Save Azimuth zeroes Command
+      new JoystickButton(CONTROLS, Button.kX.value).whenPressed(() -> SWERVE_DRIVE.saveAzimuthPositions());
+    }
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by instantiating a {@link GenericHID} or one of its subclasses
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return null;
-  }
 }
