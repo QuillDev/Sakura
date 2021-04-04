@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 
 import org.strykeforce.thirdcoast.swerve.MotorControllerConfig;
-import org.strykeforce.thirdcoast.swerve.MotorControllerWrapper;
 import org.strykeforce.thirdcoast.swerve.SparkMaxWrapper;
 import org.strykeforce.thirdcoast.swerve.SwerveDrive;
 import org.strykeforce.thirdcoast.swerve.SwerveDriveConfig;
@@ -54,17 +52,17 @@ public class DriveSubsystem extends SubsystemBase {
         // Configure our motor types
         config.azimuthConfig = new MotorControllerConfig(AzimuthMotorController.TALON_SRX,
                 FeedbackSensor.CTRE_MAG_ENCODER);
-        config.driveConfig = new MotorControllerConfig(AzimuthMotorController.SPARK_MAX, FeedbackSensor.CAN_CODER);
+        config.driveConfig = new MotorControllerConfig(AzimuthMotorController.SPARK_MAX, FeedbackSensor.INTEGRATED_SENSOR);
 
         // Drive Configuration
-        config.driveConfig.slot0.kP = 1;
-        config.driveConfig.slot0.kI = 0.;
-        config.driveConfig.slot0.kD = 0.;
-        config.driveConfig.slot0.kF = 0.;
-        config.driveConfig.slot0.kIZone = 0.;
-        config.driveConfig.slot0.kAllowableError = 0;
-        config.driveConfig.motionCruiseVelocity = 3000;
-        config.driveConfig.motionAcceleration = 4000;
+        config.driveConfig.slot0.kP = 5e-5;
+        config.driveConfig.slot0.kI = 1e-6;
+        config.driveConfig.slot0.kD = 0;
+        config.driveConfig.slot0.kIZone = 0;
+        config.driveConfig.slot0.kF = 0.000156;
+        config.driveConfig.motionCruiseVelocity = 2000;
+        config.azimuthConfig.motionAcceleration = 1500;
+
         // Azimuth Config
         config.azimuthConfig.continuousCurrentLimit = 10;
         config.azimuthConfig.peakCurrentLimit = 0;
